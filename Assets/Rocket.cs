@@ -44,11 +44,9 @@ public class Rocket : MonoBehaviour {
     private void Thrust()
     {
 
-        float thrustSpeed = mThrust * Time.deltaTime;
-
         if (Input.GetKey(KeyCode.Space)) // Able to thrust whilst rotating
         {
-            rigidBody.AddRelativeForce(Vector3.up * thrustSpeed);
+            rigidBody.AddRelativeForce(Vector3.up * mThrust);
             if (!audioSource.isPlaying) // Prevents audio start from being looped repeatedly
             {
                 audioSource.Play();
@@ -58,6 +56,20 @@ public class Rocket : MonoBehaviour {
         else
         {
             audioSource.Stop();
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        switch (collision.gameObject.tag)
+        {
+            case "Friendly":
+                // Do nothing.
+                break;
+            default:
+                print("broke");
+                // Kill player and restart level.
+                break;
         }
     }
 }
