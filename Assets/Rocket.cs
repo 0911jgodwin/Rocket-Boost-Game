@@ -65,16 +65,19 @@ public class Rocket : MonoBehaviour {
         else
         {
             audioSource.Stop();
+            mainEngineParticles.Stop();
         }
     }
 
     private void ApplyThrust()
     {
-        rigidBody.AddRelativeForce(Vector3.up * mThrust);
+        rigidBody.AddRelativeForce(Vector3.up * mThrust * Time.deltaTime);
         if (!audioSource.isPlaying) // Prevents audio start from being looped repeatedly
         {
             audioSource.PlayOneShot(mainEngine);
         }
+
+        mainEngineParticles.Play();
     }
 
     void OnCollisionEnter(Collision collision)
@@ -102,8 +105,10 @@ public class Rocket : MonoBehaviour {
     {
         state = State.Dying;
         audioSource.Stop();         // Stop thrust sound before playing death sound
+        mainEngineParticles.Stop();
         audioSource.PlayOneShot(death);
-        Invoke("PlayerDeath", 1f);
+        Invoke("PlayerDeath", 1.5f);
+        deathParticles.Play();
     }
 
     private void StartSuccessSequence()
@@ -111,7 +116,8 @@ public class Rocket : MonoBehaviour {
         state = State.Transcending;
         audioSource.Stop();
         audioSource.PlayOneShot(success);
-        Invoke("LoadNextLevel", 1f);
+        Invoke("LoadNextLevel", 2f);
+        successParticles.Play();
     }
 
     private void PlayerDeath()
